@@ -1,0 +1,27 @@
+# This is a basic workflow to help you get started with Actions
+
+name: OSX build
+
+# Controls when the workflow will run
+on: push
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Dependencies
+        run: |
+          brew update
+          brew install gfortran cmake
+      - name: Configure, build, and test
+        uses: threeal/cmake-action@v1.3.0
+        with:
+          run-build: true
+          run-test: true
