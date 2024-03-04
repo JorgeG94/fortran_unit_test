@@ -14,9 +14,7 @@ function rand_mat_svd_test() result(ret) bind(C)
   ! Init the return value to failure for early exit
   ret = 1
   ! init seed for random numbers
-  do i = 1, 4
-    iseed(i) = 1
-  end do
+  iseed = [1, 1, 1, 1]
 
   call slarnv(3, iseed, 64, mat)
   call sgesvd('N', 'N', 8, 8, mat, 8, &
