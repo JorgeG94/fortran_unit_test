@@ -1,5 +1,7 @@
 # Minimalistic Fortran unit tests with CMake and CTest
 
+![CMake](https://github.com/dryman/fortran_unit_test/actions/workflows/main.yml/badge.svg)
+
 ## SYNOPSIS
 
 ```bash
@@ -115,8 +117,56 @@ code with [fprettify](https://github.com/pseewald/fprettify).
 fprettify -i 2 --strict-indent --enable-decl --disable-indent-mod -l 80 FILE.f90
 ```
 
+## Dependencies and CI
+
+CMake support a wide range of system packages. For the packages that wasn't
+included by default, user may leverage the built-in pkg-config support in
+CMake.
+
+```cmake
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(EIGEN REQUIRED IMPORTED_TARGET eigen3)
+
+target_link_libraries(
+  lapack_test
+  BLAS::BLAS
+  LAPACK::LAPACK
+  PkgConfig::EIGEN
+)
+```
+
+User may further integrate with github actions for CI:
+
+```yml
+# .github/workflows/main.yml
+name: CMake
+on: push
+jobs:
+  build-project:
+    name: Build Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: gfortran libopenblas-dev liblapack-dev
+          version: 1.0
+      - name: Configure, build, and test
+        uses: threeal/cmake-action@v1.3.0
+        with:
+          run-build: true
+          run-test: true
+```
+
 ## Links
 
 * [pyohannes/ctest-fortran-unittest](https://github.com/pyohannes/ctest-fortran-unittest)
 * [Unit testing frameworks in Fortran Wiki](https://fortranwiki.org/fortran/show/Unit+testing+frameworks)
 * [Testing with CMake and CTest](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html)
+* [CMake and PkgConfig](https://cmake.org/cmake/help/latest/module/FindPkgConfig.html)
+* [cache-apt-pkgs-action](https://github.com/marketplace/actions/cache-apt-packages)
+* [cmake action](https://github.com/marketplace/actions/cmake-action)
