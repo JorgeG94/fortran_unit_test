@@ -20,9 +20,9 @@ jobs:
         run: |
           brew update
           brew install homebrew/core/gfortran cmake
-          brew upgrade
-      - name: Configure, build, and test
+      - name: Configure
         uses: threeal/cmake-action@v1.3.0
         with:
+          options: CMAKE_Fortran_COMPILER=/opt/homebrew/bin/gfortran
           run-build: true
           run-test: true
