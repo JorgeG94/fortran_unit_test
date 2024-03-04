@@ -33,12 +33,10 @@ language's lesser popularity, leading to their exclusion from consideration. In
 pursuit of solutions with minimal dependencies and robust support in major
 systems like CMake and CTest, pyohannes introduced a groundbreaking demo
 utilizing solely CMake and CTest for Fortran
-[link](https://github.com/pyohannes/ctest-fortran-unittest). We have further
+([link](https://github.com/pyohannes/ctest-fortran-unittest)). We have further
 enhanced this solution by eliminating the need for platform-dependent symbol
 mangling and enabling the grouping of multiple unit tests within a single
 Fortran file.
-
-</* TODO: install lapack with github actions like scipy for CI/CD */>
 
 ## Writing Fortran tests
 
