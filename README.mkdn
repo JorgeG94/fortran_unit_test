@@ -1,0 +1,124 @@
+# Minimalistic Fortran unit tests with CMake and CTest
+
+## SYNOPSIS
+
+```bash
+cmake -S . -B build
+cmake --build build
+ctest --test-dir build
+================= OUTPUT ==============
+Test project XXXXX
+    Start 1: saxpy_test
+1/3 Test #1: saxpy_test .......................   Passed    0.09 sec
+    Start 2: sgemv_test
+2/3 Test #2: sgemv_test .......................   Passed    0.00 sec
+    Start 3: rand_mat_svd_test
+3/3 Test #3: rand_mat_svd_test ................   Passed    0.08 sec
+```
+
+## Rationale
+
+Despite its age, Fortran continues to reign as the dominant language in advanced
+numerical algorithms and physics simulations. Cutting-edge numerical algorithms,
+including BLAS3-based LU, QR, RRQR, and implementations of eigenvalue/svd with
+divide-and-conquer, are exclusively found in LAPACK, setting it apart from
+competing clones like Eigen or Armadillo. This makes Fortran the preferred
+choice for researchers developing new algorithms, as it provides a foundation
+for benchmarking against established baselines written in the language.
+
+While Fortran lacks a standardized unit testing framework, developers have
+devised custom testing systems for their projects. Unfortunately, many
+Fortran-based unit test frameworks suffer from infrequent updates due to the
+language's lesser popularity, leading to their exclusion from consideration. In
+pursuit of solutions with minimal dependencies and robust support in major
+systems like CMake and CTest, pyohannes introduced a groundbreaking demo
+utilizing solely CMake and CTest for Fortran
+[link](https://github.com/pyohannes/ctest-fortran-unittest). We have further
+enhanced this solution by eliminating the need for platform-dependent symbol
+mangling and enabling the grouping of multiple unit tests within a single
+Fortran file.
+
+</* TODO: install lapack with github actions like scipy for CI/CD */>
+
+## Writing Fortran tests
+
+Users can group multiple tests into a single module as follows.
+The test functions return 0s on success, otherwise it is treated
+as failures.
+
+```fortran
+! my_tests.f90
+module my_tests_mod
+use iso_fortran_env
+use iso_c_binding
+implicit none
+contains
+
+integer function my_test_success() result(ret) bind(C)
+  ret = 0
+end function my_test_1
+
+integer function my_test_fail() result(ret) bind(C)
+  ret = 1
+end function my_test
+
+end module my_tests_mod
+```
+
+## Specifying tests in CMake
+
+Since we used `bind(C)` in the Fortran code, we don't need
+the symbol mangling that pyohannes used. Creating a test
+binary with CMake is quite simple as follows:
+
+```cmake
+project(fortran_test)
+enable_language(Fortran)
+
+set(TEST_LIST
+  my_test_1
+  my_test_2
+)
+create_test_sourcelist(_ my_tests_main.c ${TEST_LIST})
+add_executable(my_tests my_tests_main.c my_tests.f90)
+
+foreach (test ${TEST_LIST})
+  add_test(NAME ${test} COMMAND my_tests ${test})
+endforeach ()
+```
+
+1. Begin by specifying the list of Fortran functions to be tested in a variable
+named `TEST_LIST`.
+2. Use `create_test_sourcelist` to generate a C file responsible for handling
+command line parsing, providing logging support, and forward declaring the test
+functions listed in `TEST_LIST`.
+3. Proceed to create the test executable using `add_executable`. Ensure to
+include all necessary source dependencies within this macro. If shared library
+dependencies are required, incorporate `target_link_libraries` for linking.
+4. Conclude by invoking `add_test` for each test to be executed.
+
+## Running tests
+
+The following snippet builds and runs the tests.
+
+```bash
+cmake -S . -B build
+cmake --build build
+ctest [--verbose] --test-dir build
+```
+
+## Code formatting
+
+To write your code in a clean and consistent style, we recommend to format the
+code with [fprettify](https://github.com/pseewald/fprettify).
+
+
+```bash
+fprettify -i 2 --strict-indent --enable-decl --disable-indent-mod -l 80 FILE.f90
+```
+
+## Links
+
+* [pyohannes/ctest-fortran-unittest](https://github.com/pyohannes/ctest-fortran-unittest)
+* [Unit testing frameworks in Fortran Wiki](https://fortranwiki.org/fortran/show/Unit+testing+frameworks)
+* [Testing with CMake and CTest](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html)
