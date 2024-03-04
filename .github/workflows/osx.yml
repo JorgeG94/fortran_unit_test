@@ -19,7 +19,8 @@ jobs:
       - name: Dependencies
         run: |
           brew update
-          brew install gfortran cmake
+          brew install homebrew/core/gfortran cmake
+          brew upgrade
       - name: Configure, build, and test
         uses: threeal/cmake-action@v1.3.0
         with:
