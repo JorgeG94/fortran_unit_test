@@ -1,6 +1,7 @@
 # Minimalistic Fortran unit tests with CMake and CTest
 
 ![CMake](https://github.com/dryman/fortran_unit_test/actions/workflows/main.yml/badge.svg)
+![OSX](https://github.com/dryman/fortran_unit_test/actions/workflows/osx.yml/badge.svg)
 
 ## SYNOPSIS
 

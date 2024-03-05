@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Configure
+      - name: Configure, Build, and Test
         uses: threeal/cmake-action@v1.3.0
         with:
-          options: CMAKE_Fortran_COMPILER=gfortran-12
+          options: CMAKE_Fortran_COMPILER=gfortran-13
           run-build: true
           run-test: true
