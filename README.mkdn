@@ -2,6 +2,7 @@
 
 ![CMake](https://github.com/dryman/fortran_unit_test/actions/workflows/main.yml/badge.svg)
 ![OSX](https://github.com/dryman/fortran_unit_test/actions/workflows/osx.yml/badge.svg)
+![Windows](https://github.com/dryman/fortran_unit_test/actions/workflows/windows.yml/badge.svg)
 
 ## SYNOPSIS
 
