@@ -32,10 +32,13 @@ jobs:
             make
             mingw-w64-x86_64-lapack
             mingw-w64-x86_64-gcc-fortran
+          pacboy: >-
+            toolchain:p
+            cmake:p
+            ninja:p
 
       - name: Configure, build, and test
-        uses: threeal/cmake-action@v1.3.0
-        with:
-          options: CMAKE_Fortran_COMPILER=/mingw64/bin/gfortran.exe
-          run-build: true
-          run-test: true
+        run: |
+          cmake -G Ninja -B build
+          cmake --build build
+          ctest --test-dir build
