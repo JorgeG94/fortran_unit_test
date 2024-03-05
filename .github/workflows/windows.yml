@@ -31,6 +31,7 @@ jobs:
             git
             make
             mingw-w64-x86_64-lapack
+            mingw-w64-gcc
 
       - name: Configure, build, and test
         uses: threeal/cmake-action@v1.3.0
