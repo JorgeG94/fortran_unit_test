@@ -5,9 +5,9 @@ implicit none
 contains
 
 function rand_mat_svd_test() result(ret) bind(C)
-  integer :: ret
+  integer(c_int) :: ret
   integer :: iseed(4)
-  integer :: info, lwork, allocstat, i
+  integer :: info, lwork, allocstat 
   real :: mat(8, 8), s(8), dummy_u, dummy_vt, qwork(1)
   real, allocatable :: work(:)
 
